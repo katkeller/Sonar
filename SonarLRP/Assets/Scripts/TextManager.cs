@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
+using UnityEngine.UI;
+using TMPro;
+using Valve.VR;
 
 public class TextManager : MonoBehaviour
 {
@@ -10,21 +13,28 @@ public class TextManager : MonoBehaviour
     private TextAsset inkAsset;
 
     [SerializeField]
+    private TextMeshPro dialogueText;
+
+    [SerializeField]
     private AudioClip[] dialogueClip = new AudioClip[5];
 
     private Story inkStory;
     private AudioSource audioSource;
-    //private float[] dialogueClipLength = new float[5];
     private string currentAudioTag = "";
-    //private List<string> currentTagsList = new List<string>();
     private AudioClip clipToPlay;
     //private float clipToPlayLength = 0;
     private int clipToPlayNumber;
 
     private void Awake()
     {
+        //SteamVR.Initialize(true);
         inkStory = new Story(inkAsset.text);
         audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(WaitForAudioDialogue());
     }
 
     IEnumerator WaitForAudioDialogue()
@@ -36,8 +46,9 @@ public class TextManager : MonoBehaviour
             currentAudioTag = string.Join("", inkStory.currentTags.ToArray());
             //clipToPlayNumber = Int32.Parse(currentTagsList);
             clipToPlayNumber = Int32.Parse(currentAudioTag);
-            clipToPlay = dialogueClip[clipToPlayNumber];
+            clipToPlay = dialogueClip[clipToPlayNumber - 1];
             //clipToPlayLength = clipToPlay.length;
+            audioSource.PlayOneShot(clipToPlay);
             yield return new WaitForSeconds(clipToPlay.length);
         }
 
