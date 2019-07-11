@@ -16,6 +16,9 @@ public class TextManager : MonoBehaviour
     private TextMeshPro dialogueText;
 
     [SerializeField]
+    private TextMeshPro[] choiceText = new TextMeshPro[2];
+
+    [SerializeField]
     private AudioClip[] dialogueClip = new AudioClip[5];
 
     private Story inkStory;
@@ -30,6 +33,11 @@ public class TextManager : MonoBehaviour
         //SteamVR.Initialize(true);
         inkStory = new Story(inkAsset.text);
         audioSource = GetComponent<AudioSource>();
+
+        for (int e = 0; e < 2; e++)
+        {
+            choiceText[e].text = "";
+        }
     }
 
     private void Start()
@@ -59,6 +67,7 @@ public class TextManager : MonoBehaviour
             {
                 Choice choice = inkStory.currentChoices[i];
                 Debug.Log("Choice " + (i + 1) + ". " + choice.text);
+                choiceText[i].text = inkStory.currentChoices[i].text;
             }
         }
     }
