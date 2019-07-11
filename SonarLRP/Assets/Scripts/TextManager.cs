@@ -42,6 +42,7 @@ public class TextManager : MonoBehaviour
         while (inkStory.canContinue)
         {
             Debug.Log(inkStory.Continue());
+            dialogueText.text = inkStory.currentText;
             //currentTagsList = inkStory.currentTags;
             currentAudioTag = string.Join("", inkStory.currentTags.ToArray());
             //clipToPlayNumber = Int32.Parse(currentTagsList);
