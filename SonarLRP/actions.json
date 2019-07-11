@@ -41,6 +41,15 @@
       "requirement": "optional"
     },
     {
+      "name": "/actions/default/in/DialogueChoice1",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/default/in/DialogueChoice2",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     },

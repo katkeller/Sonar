@@ -13,7 +13,7 @@ public class TextManager : MonoBehaviour
     private TextAsset inkAsset;
 
     [SerializeField]
-    private TextMeshPro dialogueText;
+    private TextMeshPro subtitleText;
 
     [SerializeField]
     private TextMeshPro[] choiceText = new TextMeshPro[2];
@@ -27,6 +27,8 @@ public class TextManager : MonoBehaviour
     private AudioClip clipToPlay;
     //private float clipToPlayLength = 0;
     private int clipToPlayNumber;
+    private bool choicesAreUp = false;
+    private int[] choiceIndex = new int[2];
 
     private void Awake()
     {
@@ -38,6 +40,8 @@ public class TextManager : MonoBehaviour
         {
             choiceText[e].text = "";
         }
+
+        subtitleText.text = "";
     }
 
     private void Start()
@@ -45,12 +49,30 @@ public class TextManager : MonoBehaviour
         StartCoroutine(WaitForAudioDialogue());
     }
 
+    private void Update()
+    {
+        if (SteamVR_Actions._default.DialogueChoice1.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp)
+        {
+            inkStory.ChooseChoiceIndex(choiceIndex[0]);
+            choiceText[1].text = "";
+            choicesAreUp = false;
+            StartCoroutine(WaitForAudioDialogue());
+        }
+        else if (SteamVR_Actions._default.DialogueChoice2.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp)
+        {
+            inkStory.ChooseChoiceIndex(choiceIndex[1]);
+            choiceText[0].text = "";
+            choicesAreUp = false;
+            StartCoroutine(WaitForAudioDialogue());
+        }
+    }
+
     IEnumerator WaitForAudioDialogue()
     {
         while (inkStory.canContinue)
         {
             Debug.Log(inkStory.Continue());
-            dialogueText.text = inkStory.currentText;
+            subtitleText.text = inkStory.currentText;
             //currentTagsList = inkStory.currentTags;
             currentAudioTag = string.Join("", inkStory.currentTags.ToArray());
             //clipToPlayNumber = Int32.Parse(currentTagsList);
@@ -68,6 +90,8 @@ public class TextManager : MonoBehaviour
                 Choice choice = inkStory.currentChoices[i];
                 Debug.Log("Choice " + (i + 1) + ". " + choice.text);
                 choiceText[i].text = inkStory.currentChoices[i].text;
+                choicesAreUp = true;
+                choiceIndex[i] = choice.index;
             }
         }
     }
