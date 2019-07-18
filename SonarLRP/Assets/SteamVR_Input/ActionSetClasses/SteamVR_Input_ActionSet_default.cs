@@ -113,6 +113,14 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean SonarShout
+        {
+            get
+            {
+                return SteamVR_Actions.default_SonarShout;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

@@ -43,15 +43,7 @@ public class SonarRing : MonoBehaviour
             yield return null;
         }
 
-        //float progress = 0;
-
-        //while (progress <= 1)
-        //{
-        //    transform.localScale = Vector3.Lerp(startingScale, finalScale, progress);
-        //    progress += Time.deltaTime * timeScale;
-        //    yield return null;
-        //}
-
-        //transform.localScale = finalScale;
+        yield return new WaitForSeconds(2);
+        Destroy(this.gameObject);
     }
 }
