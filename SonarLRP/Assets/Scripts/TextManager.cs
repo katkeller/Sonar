@@ -24,6 +24,9 @@ public class TextManager : MonoBehaviour
     [SerializeField]
     private AudioClip WTTriggerPushed, WTChoiceSelected;
 
+    [SerializeField]
+    private SonarShout playerSonarShout;
+
     private Story inkStory;
     private AudioSource audioSource;
     private MeshCollider headMeshCollider;
@@ -35,6 +38,9 @@ public class TextManager : MonoBehaviour
     private bool wTIsNearFace = false;
     private bool canTalk = false;
     private int[] choiceIndex = new int[2];
+
+    private string dialogue;
+
 
     private void Awake()
     {
@@ -93,6 +99,7 @@ public class TextManager : MonoBehaviour
         {
             Debug.Log(inkStory.Continue());
             subtitleText.text = inkStory.currentText;
+            CheckForPlayerDialogue();
             //currentTagsList = inkStory.currentTags;
             currentAudioTag = string.Join("", inkStory.currentTags.ToArray());
             //clipToPlayNumber = Int32.Parse(currentTagsList);
@@ -113,6 +120,23 @@ public class TextManager : MonoBehaviour
                 choicesAreUp = true;
                 choiceIndex[i] = choice.index;
             }
+
+            playerSonarShout.isTalking = false;
+        }
+    }
+
+    private void CheckForPlayerDialogue()
+    {
+        dialogue = inkStory.currentText;
+        string[] splitDialogue = dialogue.Split(':');
+
+        if (splitDialogue[0] == "You")
+        {
+            playerSonarShout.isTalking = true;
+        }
+        else if (splitDialogue[0] == "Friend")
+        {
+            playerSonarShout.isTalking = false;
         }
     }
 

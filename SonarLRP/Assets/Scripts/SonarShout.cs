@@ -20,6 +20,8 @@ public class SonarShout : MonoBehaviour
     [SerializeField]
     private float delayBetweenRings = 0.5f, sonarCooldown = 8.0f;
 
+    public bool isTalking = false;
+
     private bool isYelling = false;
     private AudioSource audioSource;
     private AudioClip clipToPlay;
@@ -32,7 +34,7 @@ public class SonarShout : MonoBehaviour
 
     void Update()
     {
-        if (SteamVR_Actions._default.SonarShout.GetStateDown(SteamVR_Input_Sources.Any) && !isYelling)
+        if (SteamVR_Actions._default.SonarShout.GetStateDown(SteamVR_Input_Sources.Any) && !isYelling && !isTalking)
         {
             StartCoroutine(SpawnSonar());
         }
