@@ -278,7 +278,7 @@
             {
                "inputs" : {
                   "position" : {
-                     "output" : "/actions/default/in/move"
+                     "output" : "/actions/default/in/turn"
                   }
                },
                "mode" : "joystick",
