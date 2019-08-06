@@ -12,6 +12,11 @@ public class CharacterController : MonoBehaviour
     [SerializeField]
     private float turnSpeed = 2.0f;
 
+    [SerializeField]
+    private AudioClip[] footsteps = new AudioClip[8];
+
+    private AudioSource audioSource;
+
     float GetAngle(float input)
     {
         if (input < 0f)
@@ -25,6 +30,10 @@ public class CharacterController : MonoBehaviour
         return 0f;
     }
 
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -37,6 +46,12 @@ public class CharacterController : MonoBehaviour
         Vector2 translation = SteamVR_Actions._default.Move.GetAxis(SteamVR_Input_Sources.Any);
         translation *= Time.deltaTime;
         transform.Translate(translation.x, 0, translation.y);
+
+        if (audioSource.isPlaying == false && translation != Vector2.zero)
+        {
+            AudioClip clipToPlay = footsteps[UnityEngine.Random.Range(0, footsteps.Length)];
+            audioSource.PlayOneShot(clipToPlay);
+        }
     }
 
     private void TurnPlayer()
@@ -49,15 +64,5 @@ public class CharacterController : MonoBehaviour
         eulur.x = Mathf.LerpAngle(eulur.x, angle, turnSpeed * Time.deltaTime);
         eulur.y += joystickVector.x * turnSpeed * Time.deltaTime;
         this.transform.rotation = Quaternion.Euler(eulur);
-
-        //Vector2 rotation = SteamVR_Actions._default.Turn.GetAxis(SteamVR_Input_Sources.Any);
-        //transform.localRotation = Quaternion.AngleAxis(rotation.x * turnSpeed, transform.up);
-        
-
-        //transform.Rotate(SteamVR_Actions._default.Turn.GetAxis(SteamVR_Input_Sources.Any) * turnSpeed);
-        //transform.rotation = Quaternion.Euler(SteamVR_Actions._default.Turn.GetAxis(SteamVR_Input_Sources.Any) * turnSpeed, 0, 0);
-
-        //Vector3 currentRotation = transform.localEulerAngles;
-        //transform.localEulerAngles = Vector3.Slerp(currentRotation, Vector3.zero, Time.deltaTime * 2)
     }
 }
