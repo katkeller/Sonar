@@ -142,15 +142,6 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/teleport"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/joystick"
-            },
-            {
-               "inputs" : {
-                  "click" : {
                      "output" : "/actions/default/in/grabgrip"
                   }
                },
@@ -197,15 +188,6 @@
                   "click_deactivate_threshold" : "0.7"
                },
                "path" : "/user/hand/right/input/trigger"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/default/in/teleport"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/joystick"
             },
             {
                "inputs" : {
