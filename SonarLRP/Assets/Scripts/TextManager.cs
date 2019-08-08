@@ -142,46 +142,64 @@ public class TextManager : MonoBehaviour
             subtitleText.color = new Color32(255, 169, 29, 255);
         }
 
-        // Check to see if the dialogue is longer than 90 char, a.k.a., the size of our subtitle text box.
-        if (splitDialogue[1].Length > 90)
+        if (splitDialogue[1].Contains("^"))
         {
-            float textCyclesFloat = splitDialogue[1].Length / 90;
-            int textCycles;
+            string[] subtitleSplit = splitDialogue[1].Split('^');
+            int textCycles = subtitleSplit.Length;
+            float waitTime = clipToPlay.length / textCycles;
 
-            // Check for a decimal value, and if there is one, add 1 to the number of text cycles
-            if ((textCyclesFloat % 1) == float.Epsilon)
-            {
-                textCycles = (int)textCyclesFloat;
-            }
-            else
-            {
-                textCycles = (int)textCyclesFloat + 1;
-            }
-
-            int startingChar = 0;
-            int endingChar = 89;
-            float secondsToWait = clipToPlay.length / textCycles;
-
-            // For each text cycle of 90 char, display the text for the length of the audio clip divided by the number of text cycles.
             for (int j = 0; j < textCycles; j++)
             {
-                if (endingChar > splitDialogue[1].Length)
-                {
-                    subtitleText.text = splitDialogue[1].Substring(startingChar);
-                }
-                else
-                {
-                    subtitleText.text = splitDialogue[1].Substring(startingChar, endingChar);
-                    startingChar += 90;
-                    endingChar += 90;
-                }
-
-                yield return new WaitForSeconds(secondsToWait);
+                subtitleText.text = subtitleSplit[j];
+                yield return new WaitForSeconds(waitTime);
             }
         }
         else
         {
-            subtitleText.text = inkStory.currentText;
+            subtitleText.text = splitDialogue[1];
         }
+
+
+        //// Check to see if the dialogue is longer than 90 char, a.k.a., the size of our subtitle text box.
+        //if (splitDialogue[1].Length > 90)
+        //{
+        //    float textCyclesFloat = splitDialogue[1].Length / 90;
+        //    int textCycles;
+
+        //    // Check for a decimal value, and if there is one, add 1 to the number of text cycles
+        //    if ((textCyclesFloat % 1) == float.Epsilon)
+        //    {
+        //        textCycles = (int)textCyclesFloat;
+        //    }
+        //    else
+        //    {
+        //        textCycles = (int)textCyclesFloat + 1;
+        //    }
+
+        //    int startingChar = 0;
+        //    int endingChar = 89;
+        //    float secondsToWait = clipToPlay.length / textCycles;
+
+        //    // For each text cycle of 90 char, display the text for the length of the audio clip divided by the number of text cycles.
+        //    for (int j = 0; j < textCycles; j++)
+        //    {
+        //        if (endingChar > splitDialogue[1].Length)
+        //        {
+        //            subtitleText.text = splitDialogue[1].Substring(startingChar);
+        //        }
+        //        else
+        //        {
+        //            subtitleText.text = splitDialogue[1].Substring(startingChar, endingChar);
+        //            startingChar += 90;
+        //            endingChar += 90;
+        //        }
+
+        //        yield return new WaitForSeconds(secondsToWait);
+        //    }
+        //}
+        //else
+        //{
+        //    subtitleText.text = inkStory.currentText;
+        //}
     }
 }
