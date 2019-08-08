@@ -98,14 +98,14 @@ public class TextManager : MonoBehaviour
         while (inkStory.canContinue)
         {
             Debug.Log(inkStory.Continue());
-            subtitleText.text = inkStory.currentText;
-            CheckForPlayerDialogue();
+            //subtitleText.text = inkStory.currentText;
             //currentTagsList = inkStory.currentTags;
             currentAudioTag = string.Join("", inkStory.currentTags.ToArray());
             //clipToPlayNumber = Int32.Parse(currentTagsList);
             clipToPlayNumber = Int32.Parse(currentAudioTag);
             clipToPlay = dialogueClip[clipToPlayNumber - 1];
             //clipToPlayLength = clipToPlay.length;
+            StartCoroutine(DisplayDialogue());
             audioSource.PlayOneShot(clipToPlay, 1.0f);
             yield return new WaitForSeconds(clipToPlay.length);
         }
@@ -125,34 +125,63 @@ public class TextManager : MonoBehaviour
         }
     }
 
-    private void CheckForPlayerDialogue()
+    IEnumerator DisplayDialogue()
     {
+        // Split the current dialogue into two parts: the "speaker" at the beginning, and the actual dialogue at the end. Then determine who the speaker is, and set the subtitle color and the isTalking bool accordingly.
         dialogue = inkStory.currentText;
         string[] splitDialogue = dialogue.Split(':');
 
         if (splitDialogue[0] == "You")
         {
             playerSonarShout.isTalking = true;
+            subtitleText.color = new Color32(255, 255, 255, 255);
         }
         else if (splitDialogue[0] == "Friend")
         {
             playerSonarShout.isTalking = false;
+            subtitleText.color = new Color32(255, 169, 29, 255);
+        }
+
+        // Check to see if the dialogue is longer than 90 char, a.k.a., the size of our subtitle text box.
+        if (splitDialogue[1].Length > 90)
+        {
+            float textCyclesFloat = splitDialogue[1].Length / 90;
+            int textCycles;
+
+            // Check for a decimal value, and if there is one, add 1 to the number of text cycles
+            if ((textCyclesFloat % 1) == float.Epsilon)
+            {
+                textCycles = (int)textCyclesFloat;
+            }
+            else
+            {
+                textCycles = (int)textCyclesFloat + 1;
+            }
+
+            int startingChar = 0;
+            int endingChar = 89;
+            float secondsToWait = clipToPlay.length / textCycles;
+
+            // For each text cycle of 90 char, display the text for the length of the audio clip divided by the number of text cycles.
+            for (int j = 0; j < textCycles; j++)
+            {
+                if (endingChar > splitDialogue[1].Length)
+                {
+                    subtitleText.text = splitDialogue[1].Substring(startingChar);
+                }
+                else
+                {
+                    subtitleText.text = splitDialogue[1].Substring(startingChar, endingChar);
+                    startingChar += 90;
+                    endingChar += 90;
+                }
+
+                yield return new WaitForSeconds(secondsToWait);
+            }
+        }
+        else
+        {
+            subtitleText.text = inkStory.currentText;
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.tag == "WalkieTalkie")
-    //    {
-    //        wTIsNearFace = true;
-    //    }
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.tag == "WalkieTalkie")
-    //    {
-    //        wTIsNearFace = false;
-    //    }
-    //}
 }
