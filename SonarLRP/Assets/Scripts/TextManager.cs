@@ -22,10 +22,13 @@ public class TextManager : MonoBehaviour
     private AudioClip[] dialogueClip = new AudioClip[5];
 
     [SerializeField]
-    private AudioClip WTTriggerPushed, WTChoiceSelected;
+    private AudioClip WTButtonPushed, WTChoiceSelected;
 
     [SerializeField]
     private SonarShout playerSonarShout;
+
+    [SerializeField]
+    private float secondsBeforeChoiceFade = 2.0f, durationOfFade = 1.0f;
 
     private Story inkStory;
     private AudioSource audioSource;
@@ -36,8 +39,13 @@ public class TextManager : MonoBehaviour
     private int clipToPlayNumber;
     private bool choicesAreUp = false;
     private bool wTIsNearFace = false;
-    private bool canTalk = false;
+    //private bool canTalk = false;
+    private bool choiceIsMade = false;
+
     private int[] choiceIndex = new int[2];
+    private int currentlySelectedChoice;
+    private int currentlyNotSelectedChoice;
+    private TextMeshPro choiceTextToHide, selectedChoiceText;
 
     private string dialogue;
 
@@ -64,33 +72,67 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if (SteamVR_Actions._default.DialogueChoice1.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp && canTalk)
+        if (SteamVR_Actions._default.DialogueChoice1.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp)
         {
-            audioSource.PlayOneShot(WTChoiceSelected, 0.5f);
-            inkStory.ChooseChoiceIndex(choiceIndex[0]);
-            choiceText[1].text = "";
-            choicesAreUp = false;
-            StartCoroutine(WaitForAudioDialogue());
+            currentlySelectedChoice = choiceIndex[0];
+            currentlyNotSelectedChoice = choiceIndex[1];
+            audioSource.PlayOneShot(WTButtonPushed);
+            choiceText[0].color = new Color32(0, 236, 0, 50);
+            choiceText[1].color = new Color32(255, 255, 255, 255);
+            choiceText[0].fontSize = 0.25f;
+            choiceText[1].fontSize = 0.2f;
+            selectedChoiceText = choiceText[0];
+            choiceTextToHide = choiceText[1];
+
+            if (!choiceIsMade)
+                choiceIsMade = true;
+
+            //audioSource.PlayOneShot(WTChoiceSelected, 0.5f);
+            //inkStory.ChooseChoiceIndex(choiceIndex[0]);
+            //choiceText[1].text = "";
+            //choicesAreUp = false;
+            //StartCoroutine(WaitForAudioDialogue());
         }
-        else if (SteamVR_Actions._default.DialogueChoice2.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp && canTalk)
+        else if (SteamVR_Actions._default.DialogueChoice2.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp)
         {
-            audioSource.PlayOneShot(WTChoiceSelected, 0.5f);
-            inkStory.ChooseChoiceIndex(choiceIndex[1]);
-            choiceText[0].text = "";
-            choicesAreUp = false;
-            StartCoroutine(WaitForAudioDialogue());
+            currentlySelectedChoice = choiceIndex[1];
+            currentlyNotSelectedChoice = choiceIndex[1];
+            audioSource.PlayOneShot(WTButtonPushed);
+            choiceText[1].color = new Color32(0, 236, 0, 50);
+            choiceText[0].color = new Color32(255, 255, 255, 255);
+            choiceText[1].fontSize = 0.25f;
+            choiceText[0].fontSize = 0.2f;
+            selectedChoiceText = choiceText[1];
+            choiceTextToHide = choiceText[0];
+
+            if (!choiceIsMade)
+                choiceIsMade = true;
+
+            //audioSource.PlayOneShot(WTChoiceSelected, 0.5f);
+            //inkStory.ChooseChoiceIndex(choiceIndex[1]);
+            //choiceText[0].text = "";
+            //choicesAreUp = false;
+            //StartCoroutine(WaitForAudioDialogue());
         }
 
-        if (SteamVR_Actions._default.WTTrigger.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp)
+        if (SteamVR_Actions._default.WTTrigger.GetStateDown(SteamVR_Input_Sources.Any) && choicesAreUp && choiceIsMade)
         {
-            canTalk = true;
-            audioSource.PlayOneShot(WTTriggerPushed, 1.0f);
+            audioSource.PlayOneShot(WTChoiceSelected);
+            inkStory.ChooseChoiceIndex(choiceIndex[currentlySelectedChoice]);
+            choiceTextToHide.text = "";
+            StartCoroutine(FadeSelectedChoiceText());
+            choiceIsMade = false;
+            choicesAreUp = false;
+            StartCoroutine(WaitForAudioDialogue());
+
+            //canTalk = true;
+            //audioSource.PlayOneShot(WTChoiceSelected, 1.0f);
         }
         
-        else if (SteamVR_Actions._default.WTTrigger.GetStateUp(SteamVR_Input_Sources.Any))
-        {
-            canTalk = false;
-        }
+        //else if (SteamVR_Actions._default.WTTrigger.GetStateUp(SteamVR_Input_Sources.Any))
+        //{
+        //    canTalk = false;
+        //}
     }
 
     IEnumerator WaitForAudioDialogue()
@@ -201,5 +243,23 @@ public class TextManager : MonoBehaviour
         //{
         //    subtitleText.text = inkStory.currentText;
         //}
+    }
+
+    IEnumerator FadeSelectedChoiceText()
+    {
+        yield return new WaitForSeconds(secondsBeforeChoiceFade);
+        Color startingColor = selectedChoiceText.color;
+
+        for (float t = 0.1f; t < durationOfFade; t += Time.deltaTime)
+        {
+            selectedChoiceText.color = Color.Lerp(startingColor, Color.clear, Mathf.Min(1, t / durationOfFade));
+            yield return null;
+        }
+
+        selectedChoiceText.text = "";
+        choiceText[0].color = new Color32(255, 255, 255, 255);
+        choiceText[1].color = new Color32(255, 255, 255, 255);
+        choiceText[0].fontSize = 0.2f;
+        choiceText[1].fontSize = 0.2f;
     }
 }
