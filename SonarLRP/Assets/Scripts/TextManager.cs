@@ -10,7 +10,7 @@ using Valve.VR;
 public class TextManager : MonoBehaviour
 {
     [SerializeField]
-    private TextAsset inkAsset;
+    private TextAsset[] inkAsset = new TextAsset[3];
 
     [SerializeField]
     private TextMeshPro subtitleText;
@@ -52,8 +52,7 @@ public class TextManager : MonoBehaviour
 
     private void Awake()
     {
-        //SteamVR.Initialize(true);
-        inkStory = new Story(inkAsset.text);
+        //inkStory = new Story(inkAsset[0].text);
         audioSource = GetComponent<AudioSource>();
         headMeshCollider = GetComponent<MeshCollider>();
 
@@ -65,10 +64,10 @@ public class TextManager : MonoBehaviour
         subtitleText.text = "";
     }
 
-    private void Start()
-    {
-        StartCoroutine(WaitForAudioDialogue());
-    }
+    //private void Start()
+    //{
+    //    StartCoroutine(WaitForAudioDialogue());
+    //}
 
     private void Update()
     {
@@ -133,6 +132,22 @@ public class TextManager : MonoBehaviour
         //{
         //    canTalk = false;
         //}
+    }
+
+    private void OnConvoTriggered(int conversationNumber)
+    {
+        inkStory = new Story(inkAsset[conversationNumber].text);
+        StartCoroutine(WaitForAudioDialogue());
+    }
+
+    private void OnEnable()
+    {
+        DialogueTrigger.ConvoTriggered += OnConvoTriggered;
+    }
+
+    private void OnDisable()
+    {
+        DialogueTrigger.ConvoTriggered -= OnConvoTriggered;
     }
 
     IEnumerator WaitForAudioDialogue()
