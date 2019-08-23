@@ -25,8 +25,8 @@ public class Neuron : MonoBehaviour
     [SerializeField]
     private GameObject[] lightBands = new GameObject[10];
 
-    [SerializeField]
-    private Color emissionColor;
+    //[SerializeField]
+    //private Color emissionColor;
 
     [SerializeField]
     private Shader topperStartingShader, startingShader, glowShader;

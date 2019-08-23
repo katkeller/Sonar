@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: NeuronBarMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 59e89961c3be3b243afeee35ea61e49e,
+  m_Shader: {fileID: -6465566751694194690, guid: 4ab3f0350c5daee439fee8bf3212e24d,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -71,6 +71,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_516A3AB1: {r: 0.1117647, g: 0.01666667, b: 0.01666667, a: 1}
     - Color_FC4BC510: {r: 3.278432, g: 0.051493604, b: 0.524442, a: 1}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
