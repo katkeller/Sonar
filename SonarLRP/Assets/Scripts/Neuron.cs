@@ -16,8 +16,25 @@ public class Neuron : MonoBehaviour
     [SerializeField]
     private int numberOfRingsToSpawn = 3;
 
+    [SerializeField]
+    private float timeBetweenLightBandIllumination = 0.1f;
+
+    [SerializeField]
+    private GameObject neuronTopper;
+
+    [SerializeField]
+    private GameObject[] lightBands = new GameObject[10];
+
+    [SerializeField]
+    private Color emissionColor;
+
+    [SerializeField]
+    private Shader topperStartingShader, startingShader, glowShader;
+
     private bool isActivated = false;
     private Vector3 neuronPosition;
+    private Material topperMaterial;
+    private Color startColor;
 
     private MeshCollider triggerCollider;
     private AudioSource audioSource;
@@ -27,6 +44,8 @@ public class Neuron : MonoBehaviour
         triggerCollider = GetComponent<MeshCollider>();
         audioSource = GetComponent<AudioSource>();
         neuronPosition = transform.position;
+        topperMaterial = neuronTopper.GetComponent<Material>();
+        //startColor = topperMaterial.color;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -35,6 +54,7 @@ public class Neuron : MonoBehaviour
         {
             isActivated = true;
             StartCoroutine(SpawnSonarRings());
+            StartCoroutine(LightUpBands());
         }
     }
 
@@ -50,6 +70,29 @@ public class Neuron : MonoBehaviour
         }
 
         yield return new WaitForSeconds(sonarCooldown);
+        topperMaterial.shader = topperStartingShader;
+
+        for (int j = 0; j > lightBands.Length; j++)
+        {
+            Material material = lightBands[j].GetComponent<Material>();
+            material.shader = startingShader;
+        }
+
         isActivated = false;
+    }
+
+    IEnumerator LightUpBands()
+    {
+        //topperMaterial.SetColor("_EmissionColor", emissionColor);
+        topperMaterial.shader = glowShader;
+        yield return new WaitForSeconds(timeBetweenLightBandIllumination);
+
+        for (int e = 0; e > lightBands.Length; e++)
+        {
+            Material material = lightBands[e].GetComponent<Material>();
+            material.shader = glowShader;
+            //material.SetColor("_EmissionColor", emissionColor);
+            yield return new WaitForSeconds(timeBetweenLightBandIllumination);
+        }
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8125067557798232803}
   m_Layer: 0
   m_Name: SonarCylinder
-  m_TagString: Untagged
+  m_TagString: PlayerSonar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
