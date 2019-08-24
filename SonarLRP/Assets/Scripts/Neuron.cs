@@ -52,6 +52,7 @@ public class Neuron : MonoBehaviour
     {
         if (other.tag == "PlayerSonar" && !isActivated)
         {
+            Debug.Log("PlayerSonar has activated the Neuron trigger.");
             isActivated = true;
             StartCoroutine(SpawnSonarRings());
             StartCoroutine(LightUpBands());

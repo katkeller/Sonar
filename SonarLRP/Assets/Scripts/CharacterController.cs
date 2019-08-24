@@ -16,6 +16,7 @@ public class CharacterController : MonoBehaviour
     private AudioClip[] footsteps = new AudioClip[8];
 
     private AudioSource audioSource;
+    private Rigidbody rb;
 
     float GetAngle(float input)
     {
@@ -33,6 +34,8 @@ public class CharacterController : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
+        Physics.IgnoreLayerCollision(9, 10);
     }
 
     void Update()
