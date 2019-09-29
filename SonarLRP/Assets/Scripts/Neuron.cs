@@ -11,10 +11,10 @@ public class Neuron : MonoBehaviour
     private GameObject neuronSonarPrefab;
 
     [SerializeField]
-    private float delayBetweenRings = 0.5f, sonarCooldown = 5.0f;
+    private float delayBetweenRings = 0.5f, sonarCooldown = 5.0f, audioDelayBuffer = 1.0f;
 
     [SerializeField]
-    private int numberOfRingsToSpawn = 3;
+    private int numberOfRingsToSpawn = 1;
 
     [SerializeField]
     private float timeBetweenLightBandIllumination = 0.1f;
@@ -55,23 +55,25 @@ public class Neuron : MonoBehaviour
             Debug.Log("PlayerSonar has activated the Neuron trigger.");
             isActivated = true;
             StartCoroutine(SpawnSonarRings());
-            StartCoroutine(LightUpBands());
+            //StartCoroutine(LightUpBands());
         }
     }
 
     IEnumerator SpawnSonarRings()
     {
         audioSource.PlayOneShot(activationSFX);
+        yield return new WaitForSeconds(audioDelayBuffer);
         
-        for (int i = 0; i > numberOfRingsToSpawn; i++)
+        for (int i = 0; i < numberOfRingsToSpawn; i++)
         {
             GameObject a = Instantiate(neuronSonarPrefab) as GameObject;
             a.transform.position = new Vector3(neuronPosition.x, neuronPosition.y + 1.5f, neuronPosition.z);
+            Debug.Log("Spawning " + a.name);
             yield return new WaitForSeconds(delayBetweenRings);
         }
 
         yield return new WaitForSeconds(sonarCooldown);
-        topperMaterial.shader = topperStartingShader;
+        //topperMaterial.shader = topperStartingShader;
 
         for (int j = 0; j > lightBands.Length; j++)
         {

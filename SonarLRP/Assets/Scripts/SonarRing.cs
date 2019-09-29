@@ -11,7 +11,7 @@ public class SonarRing : MonoBehaviour
     private Vector3 maxScale;
 
     [SerializeField]
-    private float scaleSpeed = 2f, scaleDuration = 5.0f;
+    private float scaleSpeed = 2f, scaleDuration = 5.0f, secondsBeforeDestroy = 2.0f;
 
     private Vector3 startingScale;
     private bool shouldScale;
@@ -43,7 +43,7 @@ public class SonarRing : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(secondsBeforeDestroy);
         Destroy(this.gameObject);
     }
 }

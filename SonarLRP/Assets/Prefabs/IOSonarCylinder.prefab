@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f669b171c94f22844bf017f61579d67b, type: 2}
+  - {fileID: 2100000, guid: 98112c1ae84d24e41aa48ab59d14c3e0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2635,3 +2635,4 @@ MonoBehaviour:
   maxScale: {x: 20, y: 1, z: 20}
   scaleSpeed: 2
   scaleDuration: 5
+  secondsBeforeDestroy: 0
